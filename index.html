@@ -177,14 +177,24 @@ var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturda
 var todayName = DAYS[new Date().getDay()];
 var dayOrder = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
-var sched = [
-  {day:'Monday',    sess:'Push day',            det:'Chest - Shoulders - Triceps',  type:'s'},
-  {day:'Tuesday',   sess:'Pull + Kickball',      det:'Pull AM - Kickball PM',        type:'s'},
-  {day:'Wednesday', sess:'Zone 2 + Volleyball',  det:'Zone 2 AM - Volleyball PM',    type:'c'},
-  {day:'Thursday',  sess:'Lower Body + Softball',det:'Lower AM - Softball PM',       type:'s'},
-  {day:'Friday',    sess:'Zone 2 + Kickball',    det:'Zone 2 AM - Kickball PM',      type:'c'},
-  {day:'Saturday',  sess:'VO2 Intervals',         det:'Interval session - Push hard', type:'i'},
-  {day:'Sunday',    sess:'Softball + Full Rest',  det:'Game only - Recovery day',     type:'r'},
+var schedPre = [
+  {day:'Monday',    sess:'Strength - Push',       det:'Chest - Shoulders - Triceps',         type:'s'},
+  {day:'Tuesday',   sess:'Zone 2 Cardio',          det:'45-50 min - Row / Ski / Bike erg',    type:'c'},
+  {day:'Wednesday', sess:'Strength - Pull',        det:'Back - Biceps',                       type:'s'},
+  {day:'Thursday',  sess:'Zone 2 or Walk',          det:'45-50 min or 30+ min phone-free walk',type:'c'},
+  {day:'Friday',    sess:'Strength - Lower Body',  det:'Squats - RDL - Split Squats - Core',  type:'s'},
+  {day:'Saturday',  sess:'VO2 Intervals',           det:'35-45 min - Format A or B',           type:'i'},
+  {day:'Sunday',    sess:'Rest or Walk',            det:'30+ min walk - recovery only',        type:'r'},
+];
+
+var schedSports = [
+  {day:'Monday',    sess:'Strength - Push (AM)',           det:'Full Push session AM. No sport today.',              type:'s'},
+  {day:'Tuesday',   sess:'Pull (AM) + Kickball (PM)',      det:'Pull AM before work - Kickball evening',             type:'s'},
+  {day:'Wednesday', sess:'Zone 2 (AM) + Volleyball (PM)', det:'30-40 min easy Zone 2 AM only - No strength',        type:'c'},
+  {day:'Thursday',  sess:'Lower Body (AM) + Softball (PM)',det:'Lower AM - moderate squat volume - Softball evening',type:'s'},
+  {day:'Friday',    sess:'Zone 2 (AM) + Kickball (PM)',    det:'Easy Zone 2 or walk AM - let legs recover',          type:'c'},
+  {day:'Saturday',  sess:'VO2 Intervals (AM)',              det:'Interval session - no sport today - push hard',      type:'i'},
+  {day:'Sunday',    sess:'Softball + Full Rest',            det:'Game only - zero training - recovery anchor',        type:'r'},
 ];
 
 var weekInfo = [
@@ -312,12 +322,15 @@ function buildSched() {
   html += '<strong>Intervals:</strong> ' + wi.interval + '</div>';
   html += '</div>';
 
-  /* day cards */
+  /* day cards — pick schedule based on week */
+  var activeSched = (curWeek >= 5) ? schedSports : schedPre;
+  var schedLabel = (curWeek >= 5) ? 'Sports active schedule' : 'Training-only schedule';
+  html += '<div style="font-size:11px;color:var(--tx3);margin-bottom:10px;text-align:center">' + schedLabel + '</div>';
   var todayIdx = dayOrder.indexOf(todayName);
   for (var i = 0; i < dayOrder.length; i++) {
     var d = dayOrder[i];
     var s = null;
-    for (var j = 0; j < sched.length; j++) { if (sched[j].day === d) { s = sched[j]; break; } }
+    for (var j = 0; j < activeSched.length; j++) { if (activeSched[j].day === d) { s = activeSched[j]; break; } }
     var isToday = (d === todayName);
     var past = (i < todayIdx);
     var bmap = {s:'bs', c:'bc', r:'br_', i:'bi'};
