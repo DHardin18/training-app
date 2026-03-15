@@ -78,8 +78,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg
 .sn{font-size:12px;color:var(--tx3);text-align:center}
 input[type=number]{width:100%;padding:7px 2px;text-align:center;border:1px solid var(--br2);border-radius:6px;font-size:13px;background:var(--bg2);color:var(--tx)}
 input[type=date]{width:100%;padding:9px 12px;border:1px solid var(--br2);border-radius:var(--rm);font-size:14px;background:var(--bg2);color:var(--tx)}
-.db{border-radius:6px;padding:6px 2px;font-size:13px;cursor:pointer;width:100%;border:1px solid var(--br2);background:var(--bg2);color:var(--tx3)}
-.db.ok{background:var(--glight);border-color:var(--green);color:var(--green);font-weight:600}
 .srow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0 8px}
 .sc{background:var(--bg2);border-radius:var(--rm);padding:10px;text-align:center}
 .sv{font-size:20px;font-weight:600;color:var(--tx)}
@@ -102,6 +100,37 @@ input[type=date]{width:100%;padding:9px 12px;border:1px solid var(--br2);border-
 .msave{background:var(--blue);border:none;color:#fff;font-weight:600}
 .tup{color:var(--green)}
 .tdn{color:var(--red)}
+.db{border-radius:6px;padding:6px 2px;font-size:13px;cursor:pointer;width:100%;border:1px solid var(--br2);background:var(--bg2);color:var(--tx3)}
+.db.ok{background:var(--glight);border-color:var(--green);color:var(--green);font-weight:600}
+
+/* Week selector */
+.week-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;background:var(--bg2);border-radius:var(--rl);padding:10px 14px}
+.week-bar button{background:none;border:1px solid var(--br2);border-radius:var(--rm);width:32px;height:32px;font-size:18px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center}
+.week-bar button:disabled{opacity:0.3;cursor:default}
+.week-lbl{text-align:center}
+.week-lbl .wnum{font-size:17px;font-weight:600;color:var(--tx)}
+.week-lbl .wtype{font-size:12px;color:var(--tx2);margin-top:2px}
+.week-focus{background:var(--blight);border-radius:var(--rl);padding:12px 14px;margin-bottom:14px;border:1px solid var(--bmid)}
+.week-focus .wft{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:4px}
+.week-focus .wfd{font-size:13px;color:var(--tx2);line-height:1.5}
+
+/* History */
+.hist-date-hdr{font-size:12px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:0.05em;margin:16px 0 8px}
+.hist-card{background:var(--bg);border:1px solid var(--br);border-radius:var(--rl);padding:12px 14px;margin-bottom:8px}
+.hist-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.hist-wo-name{font-size:14px;font-weight:600;color:var(--tx)}
+.hist-wo-date{font-size:12px;color:var(--tx3)}
+.hist-ex-row{padding:6px 0;border-bottom:1px solid var(--br)}
+.hist-ex-row:last-child{border-bottom:none}
+.hist-ex-name{font-size:13px;font-weight:500;color:var(--tx)}
+.hist-sets{font-size:12px;color:var(--tx2);margin-top:3px}
+.hist-set-pill{display:inline-block;background:var(--bg2);border-radius:20px;padding:2px 8px;font-size:11px;color:var(--tx2);margin:2px 3px 2px 0}
+
+/* Sub tabs */
+.subtabs{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--br2);border-radius:var(--rl);overflow:hidden}
+.stab{flex:1;padding:8px 4px;border:none;background:none;font-size:13px;cursor:pointer;color:var(--tx2);border-right:1px solid var(--br2)}
+.stab:last-child{border-right:none}
+.stab.on{background:var(--blue);color:#fff;font-weight:600}
 </style>
 </head>
 <body>
@@ -136,6 +165,10 @@ input[type=date]{width:100%;padding:9px 12px;border:1px solid var(--br2);border-
       <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       <span>Progress</span>
     </button>
+    <button class="tab" id="tab3" onclick="go(3)">
+      <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span>History</span>
+    </button>
   </div>
 </div>
 
@@ -145,13 +178,24 @@ var todayName = DAYS[new Date().getDay()];
 var dayOrder = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
 var sched = [
-  {day:'Monday',    sess:'Push day',           det:'Chest - Shoulders - Triceps',   type:'s'},
-  {day:'Tuesday',   sess:'Pull + Kickball',     det:'Pull AM - Kickball PM',         type:'s'},
-  {day:'Wednesday', sess:'Zone 2 + Volleyball', det:'Zone 2 AM - Volleyball PM',     type:'c'},
+  {day:'Monday',    sess:'Push day',            det:'Chest - Shoulders - Triceps',  type:'s'},
+  {day:'Tuesday',   sess:'Pull + Kickball',      det:'Pull AM - Kickball PM',        type:'s'},
+  {day:'Wednesday', sess:'Zone 2 + Volleyball',  det:'Zone 2 AM - Volleyball PM',    type:'c'},
   {day:'Thursday',  sess:'Lower Body + Softball',det:'Lower AM - Softball PM',       type:'s'},
-  {day:'Friday',    sess:'Zone 2 + Kickball',   det:'Zone 2 AM - Kickball PM',       type:'c'},
-  {day:'Saturday',  sess:'VO2 Intervals',        det:'Interval session - Push hard', type:'i'},
-  {day:'Sunday',    sess:'Softball + Full Rest', det:'Game only - Recovery day',     type:'r'},
+  {day:'Friday',    sess:'Zone 2 + Kickball',    det:'Zone 2 AM - Kickball PM',      type:'c'},
+  {day:'Saturday',  sess:'VO2 Intervals',         det:'Interval session - Push hard', type:'i'},
+  {day:'Sunday',    sess:'Softball + Full Rest',  det:'Game only - Recovery day',     type:'r'},
+];
+
+var weekInfo = [
+  {label:'Week 1', phase:'Phase 1 - Base Building',    strength:'3 sets per exercise. Leave 3 RIR. Learn the movements.',   cardio:'45 min Zone 2. Intervals at 7-8/10 effort.',     interval:'Format B x10 rounds'},
+  {label:'Week 2', phase:'Phase 1 - Base Building',    strength:'Add 1 working set to main lifts. Leave 2 RIR.',            cardio:'45 min Zone 2.',                                  interval:'Format B x10 rounds'},
+  {label:'Week 3', phase:'Phase 1 - Base Building',    strength:'Increase load 5-10 lbs if you hit the top of rep range.',  cardio:'Extend Zone 2 to 50 min. Intervals at 9/10.',     interval:'Format A x4 rounds'},
+  {label:'Week 4', phase:'DELOAD WEEK',                 strength:'Drop to 2 working sets. Reduce load 10-15%. No failure.',  cardio:'Zone 2 only, 40 min max. No intervals.',          interval:'NO intervals this week'},
+  {label:'Week 5', phase:'Phase 2 - Intensification',  strength:'Return to Week 3 loads. Add 1 extra set to chest/back/biceps. Sports begin - double up.',cardio:'Zone 2 at 50 min. Sports replace extra cardio.',interval:'Format A x4 rounds'},
+  {label:'Week 6', phase:'Phase 2 - Intensification',  strength:'Attempt new 1-2 rep PRs on main lifts. Drop isolation to 1 RIR.',cardio:'Push hard.',                              interval:'Format B x14 rounds'},
+  {label:'Week 7', phase:'Phase 2 - Intensification',  strength:'Peak volume week. 4-5 working sets on main movements. Push isolation near failure.',cardio:'Highest training load.', interval:'Format A x4 rounds (max effort)'},
+  {label:'Week 8', phase:'CONSOLIDATION DELOAD',        strength:'Same as Week 4 deload protocol.',                          cardio:'2 Zone 2 sessions only. Retest Zone 2 benchmark.', interval:'NO intervals this week'},
 ];
 
 var wos = {
@@ -186,60 +230,90 @@ var wos = {
     {n:'Plank with shoulder tap',   sets:2, reps:'10/side',   rest:'45 sec',  rs:45,  rir:'-'},
   ],
   'Zone 2': [
-    {n:'Row erg',              sets:1, reps:'45-50 min', rest:'Continuous', rs:0, rir:'130-150 BPM'},
-    {n:'Ski erg',              sets:1, reps:'45 min',    rest:'Continuous', rs:0, rir:'130-150 BPM'},
-    {n:'Bike erg',             sets:1, reps:'50 min',    rest:'Continuous', rs:0, rir:'130-150 BPM'},
-    {n:'Incline treadmill walk',sets:1,reps:'45-50 min', rest:'Continuous', rs:0, rir:'130-145 BPM'},
+    {n:'Row erg',               sets:1, reps:'45-50 min', rest:'Continuous', rs:0, rir:'130-150 BPM'},
+    {n:'Ski erg',               sets:1, reps:'45 min',    rest:'Continuous', rs:0, rir:'130-150 BPM'},
+    {n:'Bike erg',              sets:1, reps:'50 min',    rest:'Continuous', rs:0, rir:'130-150 BPM'},
+    {n:'Incline treadmill walk',sets:1, reps:'45-50 min', rest:'Continuous', rs:0, rir:'130-145 BPM'},
   ]
 };
 
 var metrics = [
-  {id:'pu',  name:'Push-up max reps',    unit:'reps',     desc:'Burnout set'},
-  {id:'pl',  name:'Pull-up max reps',    unit:'reps',     desc:'Bodyweight, no kip'},
-  {id:'z2',  name:'Zone 2 benchmark',   unit:'sec/500m', desc:'Row 20 min @ 140 BPM'},
-  {id:'bp',  name:'Bench press top set', unit:'lbs',      desc:'Working weight'},
-  {id:'sq',  name:'Back squat top set',  unit:'lbs',      desc:'Working weight'},
-  {id:'iv',  name:'Interval power',      unit:'watts',    desc:'4x4 avg watts on rower'},
+  {id:'pu', name:'Push-up max reps',    unit:'reps',     desc:'Burnout set'},
+  {id:'pl', name:'Pull-up max reps',    unit:'reps',     desc:'Bodyweight, no kip'},
+  {id:'z2', name:'Zone 2 benchmark',    unit:'sec/500m', desc:'Row 20 min @ 140 BPM'},
+  {id:'bp', name:'Bench press top set', unit:'lbs',      desc:'Working weight'},
+  {id:'sq', name:'Back squat top set',  unit:'lbs',      desc:'Working weight'},
+  {id:'iv', name:'Interval power',      unit:'watts',    desc:'4x4 avg watts on rower'},
 ];
 
 var pdata = {};
 var wlogs = {};
 var curWo = 'Push';
 var curMet = null;
+var curWeek = 1;
 var tIv = null;
 var tTotal = 0;
 var tLeft = 0;
 var tEx = '';
 var CIRC = 125.7;
 var curTab = 0;
+var histSubTab = 0;
 
 function load() {
   try { pdata = JSON.parse(localStorage.getItem('pd') || '{}'); } catch(e) { pdata = {}; }
   try { wlogs = JSON.parse(localStorage.getItem('wl') || '{}'); } catch(e) { wlogs = {}; }
+  try { curWeek = parseInt(localStorage.getItem('cw') || '1'); } catch(e) { curWeek = 1; }
+  if (curWeek < 1) curWeek = 1;
+  if (curWeek > 8) curWeek = 8;
 }
 function save() {
-  try { localStorage.setItem('pd', JSON.stringify(pdata)); localStorage.setItem('wl', JSON.stringify(wlogs)); } catch(e) {}
+  try {
+    localStorage.setItem('pd', JSON.stringify(pdata));
+    localStorage.setItem('wl', JSON.stringify(wlogs));
+    localStorage.setItem('cw', String(curWeek));
+  } catch(e) {}
 }
 
 function go(n) {
   curTab = n;
-  for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 4; i++) {
     var t = document.getElementById('tab' + i);
-    if (i === n) { t.className = 'tab on'; } else { t.className = 'tab'; }
+    if (t) { t.className = (i === n) ? 'tab on' : 'tab'; }
   }
-  var titles = ['This week', 'Log workout', 'Progress'];
-  var subs = ['8-week athletic program', 'Tap done to start rest timer', 'Benchmarks & PRs'];
+  var titles = ['This week', 'Log workout', 'Progress', 'History'];
+  var subs   = ['8-week athletic program', 'Tap done to start rest timer', 'Benchmarks & PRs', 'Past workouts'];
   document.getElementById('htitle').textContent = titles[n];
   document.getElementById('hsub').textContent = subs[n];
   var b = document.getElementById('body');
   if (n === 0) { b.innerHTML = buildSched(); }
   else if (n === 1) { b.innerHTML = buildWo(); }
-  else { b.innerHTML = buildProg(); }
+  else if (n === 2) { b.innerHTML = buildProg(); }
+  else { b.innerHTML = buildHist(); }
 }
 
+/* ── SCHEDULE ── */
 function buildSched() {
-  var todayIdx = dayOrder.indexOf(todayName);
+  var wi = weekInfo[curWeek - 1];
   var html = '';
+
+  /* week selector */
+  html += '<div class="week-bar">';
+  html += '<button onclick="changeWeek(-1)" ' + (curWeek <= 1 ? 'disabled' : '') + '>&#8249;</button>';
+  html += '<div class="week-lbl"><div class="wnum">' + wi.label + ' of 8</div><div class="wtype">' + wi.phase + '</div></div>';
+  html += '<button onclick="changeWeek(1)" ' + (curWeek >= 8 ? 'disabled' : '') + '>&#8250;</button>';
+  html += '</div>';
+
+  /* week focus box */
+  var isDeload = (curWeek === 4 || curWeek === 8);
+  html += '<div class="week-focus" style="' + (isDeload ? 'background:var(--rlight);border-color:var(--red)' : '') + '">';
+  html += '<div class="wft" style="' + (isDeload ? 'color:var(--red)' : '') + '">This week\'s focus</div>';
+  html += '<div class="wfd"><strong>Strength:</strong> ' + wi.strength + '<br>';
+  html += '<strong>Cardio:</strong> ' + wi.cardio + '<br>';
+  html += '<strong>Intervals:</strong> ' + wi.interval + '</div>';
+  html += '</div>';
+
+  /* day cards */
+  var todayIdx = dayOrder.indexOf(todayName);
   for (var i = 0; i < dayOrder.length; i++) {
     var d = dayOrder[i];
     var s = null;
@@ -260,6 +334,15 @@ function buildSched() {
   return html;
 }
 
+function changeWeek(dir) {
+  curWeek += dir;
+  if (curWeek < 1) curWeek = 1;
+  if (curWeek > 8) curWeek = 8;
+  save();
+  document.getElementById('body').innerHTML = buildSched();
+}
+
+/* ── WORKOUT ── */
 function buildWo() {
   var chips = ['Push','Pull','Lower','Zone 2'];
   var html = '<div class="chips">';
@@ -295,10 +378,7 @@ function buildWo() {
   return html;
 }
 
-function selWo(w) {
-  curWo = w;
-  document.getElementById('body').innerHTML = buildWo();
-}
+function selWo(w) { curWo = w; document.getElementById('body').innerHTML = buildWo(); }
 
 function ls(ei, si, f, v) {
   var dk = new Date().toISOString().split('T')[0];
@@ -332,6 +412,7 @@ function td(ei, si, exIdx, rs) {
   }
 }
 
+/* ── TIMER ── */
 function startT(sec, name) {
   stopT();
   tTotal = sec; tLeft = sec; tEx = name;
@@ -369,6 +450,7 @@ function stopT() {
   document.getElementById('tbar').className = 'tbar';
 }
 
+/* ── PROGRESS ── */
 function buildProg() {
   var html = '';
   for (var mi = 0; mi < metrics.length; mi++) {
@@ -382,8 +464,7 @@ function buildProg() {
     }
     if (ents.length > 1) prev = ents[ents.length-2].v;
     var diff = (prev !== null) ? latest - prev : null;
-    var trend = '';
-    var tc = '';
+    var trend = '', tc = '';
     if (diff !== null) {
       trend = (diff > 0 ? '&#8593; +' : '&#8595; ') + Math.abs(diff);
       tc = diff > 0 ? 'tup' : 'tdn';
@@ -411,15 +492,13 @@ function buildProg() {
           html += '<div class="bar' + (bi === slice.length-1 ? ' last' : '') + '" style="height:' + h + 'px"></div>';
         }
         html += '</div>';
-        html += '<div style="font-size:11px;color:var(--tx3);margin-top:4px">Last ' + Math.min(ents.length,8) + ' entries</div>';
+        html += '<div style="font-size:11px;color:var(--tx3);margin-top:4px">Last ' + Math.min(ents.length, 8) + ' entries</div>';
       }
       var recent = ents.slice(-3).reverse();
       html += '<div style="margin-top:8px">';
       for (var ri = 0; ri < recent.length; ri++) {
-        html += '<div class="hrow">';
-        html += '<span style="font-size:12px;color:var(--tx2)">' + recent[ri].d + '</span>';
-        html += '<span style="font-size:14px;font-weight:500;color:var(--tx)">' + recent[ri].v + ' ' + m.unit + '</span>';
-        html += '</div>';
+        html += '<div class="hrow"><span style="font-size:12px;color:var(--tx2)">' + recent[ri].d + '</span>';
+        html += '<span style="font-size:14px;font-weight:500;color:var(--tx)">' + recent[ri].v + ' ' + m.unit + '</span></div>';
       }
       html += '</div>';
     } else {
@@ -444,10 +523,7 @@ function openM(id) {
   document.getElementById('mval').value = '';
   document.getElementById('mwrap').className = 'mwrap on';
 }
-function closeM() {
-  document.getElementById('mwrap').className = 'mwrap';
-  curMet = null;
-}
+function closeM() { document.getElementById('mwrap').className = 'mwrap'; curMet = null; }
 function saveE() {
   var v = parseFloat(document.getElementById('mval').value);
   var d = document.getElementById('mdate').value;
@@ -458,6 +534,119 @@ function saveE() {
   save();
   closeM();
   document.getElementById('body').innerHTML = buildProg();
+}
+
+/* ── HISTORY ── */
+function buildHist() {
+  var html = '';
+  html += '<div class="subtabs">';
+  html += '<button class="stab' + (histSubTab === 0 ? ' on' : '') + '" onclick="setHistTab(0)">By date</button>';
+  html += '<button class="stab' + (histSubTab === 1 ? ' on' : '') + '" onclick="setHistTab(1)">Push</button>';
+  html += '<button class="stab' + (histSubTab === 2 ? ' on' : '') + '" onclick="setHistTab(2)">Pull</button>';
+  html += '<button class="stab' + (histSubTab === 3 ? ' on' : '') + '" onclick="setHistTab(3)">Lower</button>';
+  html += '</div>';
+
+  /* collect all logged sessions */
+  var allKeys = [];
+  for (var k in wlogs) { if (wlogs.hasOwnProperty(k)) allKeys.push(k); }
+  allKeys.sort(function(a,b){ return a < b ? 1 : -1; }); /* newest first */
+
+  /* filter by sub tab */
+  var filtered = [];
+  for (var i = 0; i < allKeys.length; i++) {
+    var key = allKeys[i];
+    var parts = key.split('_');
+    var date = parts[0];
+    var woType = parts.slice(1).join('_');
+    var filterMap = {1:'all', 2:'Push', 3:'Pull', 4:'Lower'};
+    var filter = filterMap[histSubTab] || 'all';
+    if (filter === 'all' || woType === filter) {
+      filtered.push({key:key, date:date, woType:woType});
+    }
+  }
+
+  if (filtered.length === 0) {
+    html += '<div class="empty">No workouts logged yet.<br>Complete sets in the Workout tab to build history.</div>';
+    return html;
+  }
+
+  var lastDate = '';
+  for (var fi = 0; fi < filtered.length; fi++) {
+    var item = filtered[fi];
+    var log = wlogs[item.key];
+    var exs = wos[item.woType];
+    if (!exs) continue;
+
+    /* check if anything was actually logged */
+    var hasData = false;
+    for (var ei in log) {
+      if (log.hasOwnProperty(ei)) {
+        for (var si in log[ei]) {
+          if (log[ei].hasOwnProperty(si)) {
+            var sl = log[ei][si];
+            if (sl.w || sl.r || sl.done) { hasData = true; break; }
+          }
+        }
+        if (hasData) break;
+      }
+    }
+    if (!hasData) continue;
+
+    if (histSubTab === 0 && item.date !== lastDate) {
+      html += '<div class="hist-date-hdr">' + formatDate(item.date) + '</div>';
+      lastDate = item.date;
+    }
+
+    html += '<div class="hist-card">';
+    html += '<div class="hist-card-top">';
+    html += '<span class="hist-wo-name">' + item.woType + '</span>';
+    if (histSubTab !== 0) html += '<span class="hist-wo-date">' + formatDate(item.date) + '</span>';
+    html += '</div>';
+
+    for (var ei2 = 0; ei2 < exs.length; ei2++) {
+      var exLog = log[ei2];
+      if (!exLog) continue;
+      var setStrs = [];
+      for (var si2 = 0; si2 < exs[ei2].sets; si2++) {
+        var sd = exLog[si2];
+        if (!sd) continue;
+        if (sd.w || sd.r) {
+          var str = '';
+          if (sd.w) str += sd.w + 'lb';
+          if (sd.w && sd.r) str += ' x ';
+          if (sd.r) str += sd.r + ' reps';
+          if (sd.rir) str += ' (RIR ' + sd.rir + ')';
+          if (str) setStrs.push(str);
+        }
+      }
+      if (setStrs.length > 0) {
+        html += '<div class="hist-ex-row">';
+        html += '<div class="hist-ex-name">' + exs[ei2].n + '</div>';
+        html += '<div class="hist-sets">';
+        for (var pi = 0; pi < setStrs.length; pi++) {
+          html += '<span class="hist-set-pill">Set ' + (pi+1) + ': ' + setStrs[pi] + '</span>';
+        }
+        html += '</div></div>';
+      }
+    }
+    html += '</div>';
+  }
+
+  return html;
+}
+
+function setHistTab(n) {
+  histSubTab = n;
+  document.getElementById('body').innerHTML = buildHist();
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  var parts = d.split('-');
+  if (parts.length < 3) return d;
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var mo = parseInt(parts[1]) - 1;
+  return months[mo] + ' ' + parseInt(parts[2]) + ', ' + parts[0];
 }
 
 load();
