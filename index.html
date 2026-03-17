@@ -178,31 +178,31 @@ var todayName = DAYS[new Date().getDay()];
 var dayOrder = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
 var schedPre = [
-  {day:'Monday',    sess:'Strength - Push',       det:'Chest - Shoulders - Triceps',         type:'s'},
-  {day:'Tuesday',   sess:'Zone 2 Cardio',          det:'45-50 min - Row / Ski / Bike erg',    type:'c'},
+  {day:'Monday',    sess:'Strength - Push',        det:'Chest - Shoulders - Triceps',         type:'s'},
+  {day:'Tuesday',   sess:'Endur HYROX Session 1',  det:'Beginner HYROX program - Session 1',  type:'i'},
   {day:'Wednesday', sess:'Strength - Pull',        det:'Back - Biceps',                       type:'s'},
-  {day:'Thursday',  sess:'Easy Run (Zone 2)',         det:'Wks 1-2: 20-25 min | Wks 3-4: 30-35 min | Conversational pace',type:'c'},
+  {day:'Thursday',  sess:'Endur HYROX Session 2',     det:'Beginner HYROX program - Session 2',  type:'i'},
   {day:'Friday',    sess:'Strength - Lower Body',  det:'Squats - RDL - Split Squats - Core',  type:'s'},
-  {day:'Saturday',  sess:'VO2 Intervals',           det:'35-45 min - Format A or B',           type:'i'},
+  {day:'Saturday',  sess:'Endur HYROX Session 3',   det:'Hardest session of the week - push hard', type:'i'},
   {day:'Sunday',    sess:'Rest or Walk',            det:'30+ min walk - recovery only',        type:'r'},
 ];
 
 var schedSports = [
-  {day:'Monday',    sess:'Strength - Push (AM)',           det:'Full Push session AM. No sport today.',              type:'s'},
-  {day:'Tuesday',   sess:'Pull (AM) + Kickball (PM)',      det:'Pull AM before work - Kickball evening',             type:'s'},
+  {day:'Monday',    sess:'Strength - Push',                det:'Chest - Shoulders - Triceps - full session AM',      type:'s'},
+  {day:'Tuesday',   sess:'HYROX (AM) + Kickball (PM)',     det:'Endur session AM - Kickball PM - monitor leg fatigue', type:'i'},
   {day:'Wednesday', sess:'Zone 2 (AM) + Volleyball (PM)', det:'30-40 min easy Zone 2 AM only - No strength',        type:'c'},
-  {day:'Thursday',  sess:'Lower Body (AM) + Softball (PM)',det:'Lower AM - moderate squat volume - Softball evening',type:'s'},
+  {day:'Thursday',  sess:'HYROX (AM) + Softball (PM)',     det:'Endur session AM - Softball PM - reduce intensity if legs are heavy', type:'i'},
   {day:'Friday',    sess:'Zone 2 (AM) + Kickball (PM)',    det:'Easy Zone 2 or walk AM - let legs recover',          type:'c'},
-  {day:'Saturday',  sess:'VO2 Intervals (AM)',              det:'Interval session - no sport today - push hard',      type:'i'},
+  {day:'Saturday',  sess:'Endur HYROX Session (AM)',        det:'Hardest HYROX session - no sport today - recover well', type:'i'},
   {day:'Sunday',    sess:'Softball + Full Rest',            det:'Game only - zero training - recovery anchor',        type:'r'},
 ];
 
 var weekInfo = [
-  {label:'Week 1', phase:'Phase 1 - Base Building',    strength:'3 sets per exercise. Leave 3 RIR. Learn the movements.',   cardio:'Tue: 45 min Zone 2 erg. Thu: easy run 20-25 min.',interval:'Format B x10 rounds — erg only'},
-  {label:'Week 2', phase:'Phase 1 - Base Building',    strength:'Add 1 working set to main lifts. Leave 2 RIR.',            cardio:'Tue: 45 min Zone 2 erg. Thu: easy run 20-25 min.',interval:'Format B x10 rounds — erg only'},
-  {label:'Week 3', phase:'Phase 1 - Base Building',    strength:'Increase load 5-10 lbs if you hit the top of rep range.',  cardio:'Tue: 50 min Zone 2 erg. Thu: easy run 30-35 min.',interval:'Format A x4 rounds — mix erg + run'},
-  {label:'Week 4', phase:'DELOAD WEEK',                 strength:'Drop to 2 working sets. Reduce load 10-15%. No failure.',  cardio:'Tue: 40 min easy erg. Thu: easy run 25-30 min or walk if foot needs rest.',interval:'NO intervals this week'},
-  {label:'Week 5', phase:'Phase 2 - Intensification',  strength:'Return to Week 3 loads. Add 1 extra set to chest/back/biceps. Sports begin - double up.',cardio:'Zone 2 at 50 min. Sports replace extra cardio.',interval:'Format A x4 rounds'},
+  {label:'Week 1', phase:'Phase 1 - Base Building',    strength:'3 sets per exercise. Leave 3 RIR. Learn the movements.',   cardio:'Tue/Thu/Sat: Endur HYROX beginner sessions.',interval:'Endur app — beginner program'},
+  {label:'Week 2', phase:'Phase 1 - Base Building',    strength:'Add 1 working set to main lifts. Leave 2 RIR.',            cardio:'Tue/Thu/Sat: Endur HYROX beginner sessions.',interval:'Endur app — beginner program'},
+  {label:'Week 3', phase:'Phase 1 - Base Building',    strength:'Increase load 5-10 lbs if you hit the top of rep range.',  cardio:'Tue/Thu/Sat: Endur HYROX sessions - push harder.',interval:'Endur app — increase effort'},
+  {label:'Week 4', phase:'DELOAD WEEK',                 strength:'Drop to 2 working sets. Reduce load 10-15%. No failure.',  cardio:'Tue/Thu/Sat: Endur sessions at easy effort only.',interval:'Endur — easy effort only'},
+  {label:'Week 5', phase:'Phase 2 - Intensification',  strength:'Return to Week 3 loads. Add 1 extra set to chest/back/biceps. Sports begin - double up.',cardio:'Tue/Thu: HYROX AM + sport PM. Sat: HYROX only.',interval:'Endur — increase intensity'},
   {label:'Week 6', phase:'Phase 2 - Intensification',  strength:'Attempt new 1-2 rep PRs on main lifts. Drop isolation to 1 RIR.',cardio:'Push hard.',                              interval:'Format B x14 rounds'},
   {label:'Week 7', phase:'Phase 2 - Intensification',  strength:'Peak volume week. 4-5 working sets on main movements. Push isolation near failure.',cardio:'Highest training load.', interval:'Format A x4 rounds (max effort)'},
   {label:'Week 8', phase:'CONSOLIDATION DELOAD',        strength:'Same as Week 4 deload protocol.',                          cardio:'2 Zone 2 sessions only. Retest Zone 2 benchmark.', interval:'NO intervals this week'},
@@ -362,7 +362,7 @@ function changeWeek(dir) {
 
 /* ── WORKOUT ── */
 function buildWo() {
-  var chips = ['Push','Pull','Lower','Zone 2','Thu Run'];
+  var chips = ['Push','Pull','Lower'];
   var html = '<div class="chips">';
   for (var i = 0; i < chips.length; i++) {
     html += '<button class="chip' + (chips[i] === curWo ? ' on' : '') + '" onclick="selWo(\'' + chips[i] + '\')">' + chips[i] + '</button>';
